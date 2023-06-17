@@ -1,7 +1,7 @@
 import { GPIOController, GPIOOutputLine, GPIOLineEvents } from 'gpiod-client'
 import { SPIDev } from 'spi-dev'
 import { Pins } from './pins'
-import { NRF905Configuration } from './configuration'
+import { NRF905Setup } from './setup'
 
 export class NRF905 {
     private readonly gpio: GPIOController
@@ -16,7 +16,7 @@ export class NRF905 {
     private readonly AM: GPIOLineEvents
     private readonly DR: GPIOLineEvents
 
-    public readonly configuration: NRF905Configuration
+    public readonly setup: NRF905Setup
 
     public constructor(chipname: string, private readonly path: string, pins: Pins) {
         this.gpio = new GPIOController(chipname, 'nRF905')
@@ -38,13 +38,11 @@ export class NRF905 {
             SPI_MODE: 0
         })
 
-        this.configuration = new NRF905Configuration(this.spidev, this.CSN)
+        this.setup = new NRF905Setup(this.spidev, this.CSN)
     }
 
     public release(): void {
         this.spidev.close()
         this.gpio.close()
     }
-
-
 }
