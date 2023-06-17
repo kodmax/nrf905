@@ -1,6 +1,7 @@
-import { GPIOController, GPIOOutputLine, GPIOLineEvents } from "gpiod-client"
-import { SPIDev } from "spi-dev"
-import { Pins } from "./setup/pins"
+import { GPIOController, GPIOOutputLine, GPIOLineEvents } from 'gpiod-client'
+import { SPIDev } from 'spi-dev'
+import { Pins } from './pins'
+import { NRF905Configuration } from './configuration'
 
 export class NRF905 {
     private readonly gpio: GPIOController
@@ -15,6 +16,8 @@ export class NRF905 {
     private readonly AM: GPIOLineEvents
     private readonly DR: GPIOLineEvents
 
+    public readonly configuration: NRF905Configuration
+
     public constructor(chipname: string, private readonly path: string, pins: Pins) {
         this.gpio = new GPIOController(chipname, 'nRF905')
 
@@ -28,22 +31,14 @@ export class NRF905 {
         this.DR = this.gpio.requestLineEvents(pins.DR, 'rising', 10)
 
         this.spidev = new SPIDev(path, {
-            MAX_SPEED_HZ: 1_000_000,
+            MAX_SPEED_HZ: 10_000_000,
             SPI_LSB_FIRST: false,
             BITS_PER_WORD: 8,
             SPI_NO_CS: true,
-            SPI_MODE: 0,
+            SPI_MODE: 0
         })
 
-        this.CSN.setValue(0)
-        const wconfig = this.spidev.transfer(11, Uint8Array.from([0x10]))
-        console.log('nRF905 configuration write: ', wconfig)
-        this.CSN.setValue(1)
-
-        this.CSN.setValue(0)
-        const config = this.spidev.transfer(11, Uint8Array.from([0x10]))
-        console.log('nRF905 configuration read: ', config)
-        this.CSN.setValue(1)
+        this.configuration = new NRF905Configuration(this.spidev, this.CSN)
     }
 
     public release(): void {
