@@ -18,11 +18,11 @@ export class NRF905 {
 
     public readonly setup: NRF905Setup
 
-    public constructor(chipname: string, private readonly path: string, pins: Pins) {
+    public constructor(chipname: string, private readonly path: string, freq: number, pins: Pins) {
         this.gpio = new GPIOController(chipname, 'nRF905')
 
-        this.PWR_UP = this.gpio.requestLineAsOutput(pins.PWR_UP, 0)
-        this.TRX_CE = this.gpio.requestLineAsOutput(pins.TRX_CE, 0)
+        this.PWR_UP = this.gpio.requestLineAsOutput(pins.PWR_UP, 1)
+        this.TRX_CE = this.gpio.requestLineAsOutput(pins.TRX_CE, 1)
         this.TX_EN = this.gpio.requestLineAsOutput(pins.TX_EN, 0)
         this.CSN = this.gpio.requestLineAsOutput(pins.CSN, 1)
 
@@ -39,6 +39,19 @@ export class NRF905 {
         })
 
         this.setup = new NRF905Setup(this.spidev, this.CSN)
+        this.setup.setChannel(115, 0, 2)
+        
+        this.CD.addListener('edge', () => {
+            console.log('Carrier Detected')
+        })
+
+        this.AM.addListener('edge', () => {
+            console.log('Address Match')
+        })
+
+        this.DR.addListener('edge', () => {
+            console.log('Data Ready')
+        })
     }
 
     public release(): void {
