@@ -1,8 +1,6 @@
 import { ConfigurationRegister } from './registers'
 
 export const decodeCR = (data: Uint8Array): ConfigurationRegister => {
-    console.log('config to decode', data)
-
     return {
         CH_NO: data[1] + ((data[2] & 0x1) << 8),
         AUTO_RETRAN: (data[2] & 0x20) >> 5,
