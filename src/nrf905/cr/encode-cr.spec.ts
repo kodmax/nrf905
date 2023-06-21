@@ -1,4 +1,4 @@
-import { W_CONFIG } from './consts'
+import { W_CONFIG } from '../consts'
 import { encodeCR } from './encode-cr'
 
 describe('encode configuration register', () => {

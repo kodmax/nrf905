@@ -1,10 +1,10 @@
-import { W_CONFIG } from './consts'
-import { ConfigurationRegister } from './registers'
+import { W_CONFIG } from '../consts'
+import { ConfigurationRegister } from '../registers'
 
 export const encodeCR = (config: ConfigurationRegister): Uint8Array => {
     const cr = new Uint8Array(11)
     cr[0] = W_CONFIG
-    
+
     cr[1] = config.CH_NO & 0xff
     cr[2] |= config.AUTO_RETRAN << 5
     cr[2] |= config.RX_RED_PWR << 4

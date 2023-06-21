@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "gpiod-client": "^1.2.3",
+    "gpiod-client": "^1.5.0",
     "spi-dev": "^1.0.3"
   },
   "devDependencies": {

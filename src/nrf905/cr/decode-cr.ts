@@ -1,4 +1,4 @@
-import { ConfigurationRegister } from './registers'
+import { ConfigurationRegister } from '../registers'
 
 export const decodeCR = (data: Uint8Array): ConfigurationRegister => {
     return {
